@@ -3,10 +3,10 @@ TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 local WhiteList = {}
 
-local discord = "DISCORD_ADRESS"
-local notwhitelisted = "Venez nous rejoindre ici: " .. discord
-local bannedPhrase = "Vous êtes bannis de ce serveur."
-local steamiderr = "Votre steamID est introuvable."
+local discord = "https://discord.gg/J4AKjSY"
+local notwhitelisted = "Come join us over at " .. discord
+local bannedPhrase = "You are banned from this server."
+local steamiderr = "Your steamID was not found, are you sure Steam is open?"
 
 local WaitingTime = 20
 local PlayersOnlineBeforeAntiSpam = 0
@@ -67,14 +67,14 @@ AddEventHandler('playerDropped', function(reason)
 		for i = 1, #PriorityList, 1 do
 			if PriorityList[i] == identifier then
 				isInPriorityList = true
-				print("WHITELIST: "..playerName.."["..identifier.."] est deja dans la file de priorite.")
+				print("WHITELIST: "..playerName.."["..identifier.."] is already in the priority queue.")
 				break
 			end
 	    end
 
 	    if not isInPriorityList then
 			table.insert(PriorityList, identifier)
-			print("WHITELIST: " .. playerName .. " [" .. identifier .. "] a ete ajoute à la file de priorite.")
+			print("WHITELIST: " .. playerName .. " [" .. identifier .. "] was added to the priority queue.")
 		end
 
 		local timeToWait = 2
@@ -92,7 +92,7 @@ AddEventHandler('playerDropped', function(reason)
 				for i = 1, #PriorityList, 1 do
 					if PriorityList[i] == identifier then
 						table.remove(PriorityList, i)
-						print("WHITELIST: " .. playerName .. " [" .. identifier .. "] a ete sorti de la file de priorite.")
+						print("WHITELIST: " .. playerName .. " [" .. identifier .. "] to be sorted out of priority.")
 					end
 			    end
 			end
@@ -115,14 +115,14 @@ AddEventHandler("playerConnecting", function(playerName, reason, deferrals)
 	local banned = false
 	local isInPriorityList = false
 
-	print("WHITELIST: " .. playerName .. " [" .. steamID .. "] essaye de se connecter")
+	print("WHITELIST: " .. playerName .. " [" .. steamID .. "] trying to connect")
 
 	-- TEST IF STEAM IS STARTED
 	if not steamID then
 		reason(steamiderr)
 		deferrals.done(steamiderr)
 		CancelEvent()
-		print("WHITELIST: " .. playerName .. " n'a pas STEAM d'ouvert. KICK")
+		print("WHITELIST: " .. playerName .. " does not have Steam open and have been kicked.")
 	end
 
 	-- TEST IF PLAYER IS WHITELISTED AND BANNED
@@ -136,7 +136,7 @@ AddEventHandler("playerConnecting", function(playerName, reason, deferrals)
 				reason(bannedPhrase)
 				deferrals.done(bannedPhrase)
 				CancelEvent()
-				print(playerName.."["..steamID.."] est banni: " .. WhiteList[i].ban_reason)
+				print(playerName.."["..steamID.."] is banned: " .. WhiteList[i].ban_reason)
 			end
 
 			Vip = WhiteList[i].vip
@@ -148,7 +148,7 @@ AddEventHandler("playerConnecting", function(playerName, reason, deferrals)
 		reason(notwhitelisted)
 		deferrals.done(notwhitelisted)
 		CancelEvent()
-		print("WHITELIST: "..playerName.."["..steamID.."] n'est pas dans la whitelist.")
+		print("WHITELIST: "..playerName.."["..steamID.."] is not whitelisted.")
 	end
 
 	-- TEST IF PLAYER IS IN PRIORITY LIST
@@ -180,7 +180,7 @@ AddEventHandler("playerConnecting", function(playerName, reason, deferrals)
 					else
 						if(k == steamID) then
 							local currentPlace = (i - firstIndex) + 1
-							deferrals.update("Place actuelle avant d'être déposé sur l'île : "..currentPlace.."/"..waitingPlayers)
+							deferrals.update("Your're in the queue "..currentPlace.."/"..waitingPlayers)
 							Wait(250)
 						end
 					end
@@ -206,7 +206,7 @@ AddEventHandler("playerConnecting", function(playerName, reason, deferrals)
 
 						local minutes = stringsplit(raw_minutes, ".")[1]
       					local seconds = stringsplit(currentPriorityTime-(minutes*60), ".")[1]
-						deferrals.update("En attente de la libération des places prioritaires... ("..#PriorityList.." place(s) prioritaire(s), temps estimé : "..minutes.." minutes et "..seconds.." secondes)")
+						deferrals.update("Waiting for the release of priority places... ("..#PriorityList.." priority place (s), estimated time: "..minutes.." minutes and "..seconds.." seconds)")
 
 						Wait(250)
 					end
@@ -219,14 +219,14 @@ AddEventHandler("playerConnecting", function(playerName, reason, deferrals)
 		deferrals.defer()
 
 		if(Vip) then
-			print("WHITELIST: "..playerName.."["..steamID.."] s'est connecté en tant que VIP.")
+			print("WHITELIST: "..playerName.."["..steamID.."] has logged in as a VIP.")
 		end
 
 		inConnexion[_source] = true
 
 		print("WHITELIST: ANTI SPAM STARTING FOR " .. playerName)
 		for i = 1, WaitingTime, 1 do
-		    deferrals.update('ANTI SPAM: Attendez encore ' .. tostring(WaitingTime - i) .. ' secondes. La connexion se fera automatiquement.')
+		    deferrals.update('ANTI SPAM: Wait another ' .. tostring(WaitingTime - i) .. ' seconds. The connection will be automatic.')
 		    Wait(1000)
 		end
 		print("WHITELIST: ANTI SPAM ENDED " .. playerName)
@@ -286,4 +286,4 @@ TriggerEvent('es:addGroupCommand', 'loadwl', 'admin', function (source, args, us
   TriggerClientEvent('chatMessage', source, "SYSTEM", {255, 0, 0}, "WHITELIST LOADED")
 end, function (source, args, user)
   TriggerClientEvent('chatMessage', source, 'SYSTEM', { 255, 0, 0 }, 'Insufficienct permissions!')
-end, { help = 'Recharger la Whitelist' })
+end, { help = 'Reload the whitelist' })
