@@ -3,9 +3,8 @@ TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 local WhiteList = {}
 
-local discord = "https://discord.gg/J4AKjSY"
-local notwhitelisted = "Come join us over at " .. discord
-local bannedPhrase = "You are banned from this server."
+local notwhitelisted = "You're not whitelisted! Whitelist over at http://stockholmcityrp.se/forum"
+local bannedPhrase = "You are banned from this server. You may apply at the forum over at http://stockholmcityrp.se/forum"
 local steamiderr = "Your steamID was not found, are you sure Steam is open?"
 
 local WaitingTime = 20
@@ -111,7 +110,7 @@ end)
 AddEventHandler("playerConnecting", function(playerName, reason, deferrals)
 	local _source = source
 	local steamID = GetPlayerIdentifiers(_source)[1] or false
-	local found = false
+	local found = true -- disabled whitelist
 	local banned = false
 	local isInPriorityList = false
 
@@ -144,6 +143,7 @@ AddEventHandler("playerConnecting", function(playerName, reason, deferrals)
 		end
 	end
 
+	-- disabled whitelist
 	if not found then
 		reason(notwhitelisted)
 		deferrals.done(notwhitelisted)
