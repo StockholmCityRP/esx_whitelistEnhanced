@@ -66,14 +66,12 @@ AddEventHandler('playerDropped', function(reason)
 		for i = 1, #PriorityList, 1 do
 			if PriorityList[i] == identifier then
 				isInPriorityList = true
-				print("WHITELIST: "..playerName.."["..identifier.."] is already in the priority queue.")
 				break
 			end
 	    end
 
 	    if not isInPriorityList then
 			table.insert(PriorityList, identifier)
-			print("WHITELIST: " .. playerName .. " [" .. identifier .. "] was added to the priority queue.")
 		end
 
 		local timeToWait = 2
@@ -83,15 +81,10 @@ AddEventHandler('playerDropped', function(reason)
 			Wait(1000)
 			currentPriorityTime = currentPriorityTime -1
 
-			print(currentPriorityTime)
-
-			print(#PriorityList)
-
 			if(i >= timeToWait) then
 				for i = 1, #PriorityList, 1 do
 					if PriorityList[i] == identifier then
 						table.remove(PriorityList, i)
-						print("WHITELIST: " .. playerName .. " [" .. identifier .. "] to be sorted out of priority.")
 					end
 			    end
 			end
@@ -114,14 +107,11 @@ AddEventHandler("playerConnecting", function(playerName, reason, deferrals)
 	local banned = false
 	local isInPriorityList = false
 
-	print("WHITELIST: " .. playerName .. " [" .. steamID .. "] trying to connect")
-
 	-- TEST IF STEAM IS STARTED
 	if not steamID then
 		reason(steamiderr)
 		deferrals.done(steamiderr)
 		CancelEvent()
-		print("WHITELIST: " .. playerName .. " does not have Steam open and have been kicked.")
 	end
 
 	-- TEST IF PLAYER IS WHITELISTED AND BANNED
@@ -135,7 +125,6 @@ AddEventHandler("playerConnecting", function(playerName, reason, deferrals)
 				reason(bannedPhrase)
 				deferrals.done(bannedPhrase)
 				CancelEvent()
-				print(playerName.."["..steamID.."] is banned: " .. WhiteList[i].ban_reason)
 			end
 
 			Vip = WhiteList[i].vip
@@ -148,7 +137,6 @@ AddEventHandler("playerConnecting", function(playerName, reason, deferrals)
 		reason(notwhitelisted)
 		deferrals.done(notwhitelisted)
 		CancelEvent()
-		print("WHITELIST: "..playerName.."["..steamID.."] is not whitelisted.")
 	end
 
 	-- TEST IF PLAYER IS IN PRIORITY LIST
@@ -218,19 +206,13 @@ AddEventHandler("playerConnecting", function(playerName, reason, deferrals)
 
 		deferrals.defer()
 
-		if(Vip) then
-			print("WHITELIST: "..playerName.."["..steamID.."] has logged in as a VIP.")
-		end
 
 		inConnexion[_source] = true
 
-		print("WHITELIST: ANTI SPAM STARTING FOR " .. playerName)
 		for i = 1, WaitingTime, 1 do
 		    deferrals.update('ANTI SPAM: Wait another ' .. tostring(WaitingTime - i) .. ' seconds. The connection will be automatic.')
 		    Wait(1000)
 		end
-		print("WHITELIST: ANTI SPAM ENDED " .. playerName)
-
 		deferrals.done() -- connect
 
 	end
